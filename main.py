@@ -4,20 +4,16 @@ import matplotlib.pyplot as plt
 import warnings
 from Dataset_download import download_dataset
 
-# Библиотеки для машинного обучения
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import QuantileRegressor
 
-# Библиотеки для статистического моделирования
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 
-# Библиотеки для оптимизации
 from scipy.optimize import minimize
 
-# Библиотеки для нейросетевого моделирования
 from tensorflow import keras
 
 warnings.filterwarnings("ignore")
@@ -85,17 +81,19 @@ def nm(x_train, x_test, y_train, y_test, graph_desc):
     x_test_scaled = scaler.transform(x_test)
 
     model = keras.Sequential([
-        keras.layers.Dense(64, activation='relu',
-                           input_shape=(x_train_scaled.shape[1],)),
+        keras.layers.Dense(64, activation='relu', input_shape=(
+            x_train_scaled.shape[1],)),
         keras.layers.Dense(64, activation='relu'),
         keras.layers.Dense(1)
     ])
 
     model.compile(optimizer='adam', loss='mse')
 
+    model.fit(x_train_scaled, y_train, epochs=100, batch_size=10,
+              validation_split=0.1, verbose=0)
+
     predictions = model.predict(x_test_scaled).flatten()
-    plot_predictions(y_test,
-                     predictions,
+    plot_predictions(y_test, predictions,
                      'Comparison of Actual vs Predicted for ' + graph_desc)
 
     mse = mean_squared_error(y_test, predictions)
